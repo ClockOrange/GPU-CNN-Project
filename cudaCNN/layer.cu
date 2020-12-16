@@ -26,19 +26,27 @@ Layer::Layer(int M, int N, int O)
 	}
 
 	cudaMalloc(&output, sizeof(float) * O);
+	//if(cuda_ret != cudaSuccess) FATAL("Allocat failure");
 	cudaMalloc(&preact, sizeof(float) * O);
+	//if(cuda_ret != cudaSuccess) FATAL("Allocat failure");
 
 	cudaMalloc(&bias, sizeof(float) * N);
+	//if(cuda_ret != cudaSuccess) FATAL("Allocat failure");
 
 	cudaMalloc(&weight, sizeof(float) * M * N);
+	//if(cuda_ret != cudaSuccess) FATAL("Allocat failure");
 
 	cudaMalloc(&d_output, sizeof(float) * O);
+	//if(cuda_ret != cudaSuccess) FATAL("Allocat failure");
 	cudaMalloc(&d_preact, sizeof(float) * O);
+	//if(cuda_ret != cudaSuccess) FATAL("Allocat failure");
 	cudaMalloc(&d_weight, sizeof(float) * M * N);
+	//if(cuda_ret != cudaSuccess) FATAL("Allocat failure");
 
 	cudaMemcpy(bias, h_bias, sizeof(float) * N, cudaMemcpyHostToDevice);
 
 	cudaMemcpy(weight, h_weight, sizeof(float) * M * N, cudaMemcpyHostToDevice);
+	
 }
 
 // Destructor

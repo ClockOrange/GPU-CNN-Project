@@ -2,7 +2,9 @@
 #define __MNIST_H__
 
 /*
- * MNIST loader by Nuri Park - https://github.com/projectgalateia/mnist
+ * MNIST loader 
+ * Reference by Nuri Park:
+ * https://github.com/projectgalateia/mnist
  */
 
 #ifdef USE_MNIST_LOADER /* Fundamental macro to make the code active */

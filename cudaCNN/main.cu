@@ -2,10 +2,14 @@
 #define MNIST_DOUBLE
 #include "mnist.h"
 #include "layer.h"
-
 #include <cuda.h>
 #include <cstdio>
 #include <time.h>
+#include "support.h"
+
+/* Some reference:
+http://luniak.io/cuda-neural-network-implementation-part-1/
+*/
 
 static mnist_data *train_set, *test_set;
 static unsigned int train_cnt, test_cnt;
@@ -32,6 +36,14 @@ static inline void loaddata()
 
 int main(int argc, const  char **argv)
 {
+	Timer timer;
+	cudaError_t cuda_ret;
+	
+	// Initialize host variables ----------------------------------------------
+
+	printf("\nSetting up the problem..."); fflush(stdout);
+	startTime(&timer);
+
 	srand(time(NULL));
 
 	CUresult err = cuInit(0);
@@ -40,9 +52,15 @@ int main(int argc, const  char **argv)
 		return 1;
 	}
 
+	// Launch kernel using standard sgemm interface ---------------------------
+	printf("Launching kernel...s\n"); fflush(stdout);
+	
 	loaddata();
 	learn();
 	test();
+
+	cudaDeviceSynchronize();
+    stopTime(&timer); printf("%f s\n", elapsedTime(timer));
 
 	return 0;
 }
@@ -162,7 +180,7 @@ static void learn()
 		}
 
 		err /= train_cnt;
-		fprintf(stdout, "error: %e, time_on_gpu: %lf\n", err, time_taken);
+		fprintf(stdout, "error: %e, GPU Time: %lf\n", err, time_taken);
 
 		if (err < threshold) {
 			fprintf(stdout, "Training complete, error less than threshold\n\n");
@@ -171,7 +189,7 @@ static void learn()
 
 	}
 	
-	fprintf(stdout, "\n Time - %lf\n", time_taken);
+	fprintf(stdout, "\n GPU Time : %lf\n", time_taken);
 }
 
 
